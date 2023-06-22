@@ -2,8 +2,10 @@ const Generator = require('sitemap-generator');
 
 export class Heater {
 
-  private crawler: any;
-  private generator: any;
+  private readonly crawler: any;
+  private readonly generator: any;
+
+  private errorsCounter = 0;
 
   constructor (url: string) {
     this.generator = Generator(url, {
@@ -15,21 +17,25 @@ export class Heater {
       timeout: 999999,
       queueItem: 1,
       userAgent: 'site-heater',
-
     });
     this.crawler = this.generator.getCrawler();
 
     this.generator.on('error', this.errorHandler.bind(this))
 
     this.crawler.on("fetchcomplete", function(queueItem, responseBuffer, response) {
-      console.log("\nStatus: %d\t\tLatency %ds\t\tDownload %ds\t\tRequest %ds\t\t", queueItem?.stateData?.code, queueItem?.stateData?.requestLatency / 1000, queueItem?.stateData?.downloadTime / 1000, queueItem?.stateData?.requestTime / 1000);
-      console.log("Page %s\n", queueItem.url);
+      console.log("\nStatus: %d\tLatency %ds\tDownload %ds\tRequest %ds", queueItem?.stateData?.code, queueItem?.stateData?.requestLatency / 1000, queueItem?.stateData?.downloadTime / 1000, queueItem?.stateData?.requestTime / 1000);
+      console.log("Page %s", queueItem.url);
     });
   }
 
   public process() {
     return new Promise((resolve, reject) => {
       this.generator.on('done', () => {
+        if (this.errorsCounter > 0) {
+          process.exit(1);
+        } else {
+          process.exit(0);
+        }
         resolve(true);
       })
       this.generator.start();
@@ -37,6 +43,7 @@ export class Heater {
   }
 
   public async errorHandler(error) {
-    console.log('error', error);
+    this.errorsCounter++;
+    console.log(error);
   }
 }

@@ -59,6 +59,7 @@ exports.Heater = void 0;
 const Generator = __nccwpck_require__(1520);
 class Heater {
     constructor(url) {
+        this.errorsCounter = 0;
         this.generator = Generator(url, {
             filepath: "./sitemap.xml",
             stripQuerystring: true,
@@ -80,6 +81,13 @@ class Heater {
     process() {
         return new Promise((resolve, reject) => {
             this.generator.on('done', () => {
+                console.log(this.errorsCounter);
+                if (this.errorsCounter > 0) {
+                    process.exit(1);
+                }
+                else {
+                    process.exit(0);
+                }
                 resolve(true);
             });
             this.generator.start();
@@ -87,7 +95,8 @@ class Heater {
     }
     errorHandler(error) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('error', error);
+            this.errorsCounter++;
+            console.log(error);
         });
     }
 }
