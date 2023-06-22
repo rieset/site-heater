@@ -16,15 +16,16 @@ const heating = (url) => __awaiter(void 0, void 0, void 0, function* () {
         console.error('URL is not specified');
     }
     else {
-        // Get config file and start process deploy
-        try {
-            const deployer = new heater_1.Heater(url);
-            yield deployer.process();
-            console.log('Done common');
-        }
-        catch (e) {
-            console.error('URL is not exist or invalid format: \n', e.message, '\n');
-        }
+        const deployer = new heater_1.Heater(url);
+        return deployer.process()
+            .then((r) => {
+            process.exit(0);
+            return r;
+        })
+            .catch((r) => {
+            process.exit(1);
+            return r;
+        });
     }
     return false;
 });

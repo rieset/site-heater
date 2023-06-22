@@ -23,15 +23,16 @@ const heating = (url) => __awaiter(void 0, void 0, void 0, function* () {
         console.error('URL is not specified');
     }
     else {
-        // Get config file and start process deploy
-        try {
-            const deployer = new heater_1.Heater(url);
-            yield deployer.process();
-            console.log('Done common');
-        }
-        catch (e) {
-            console.error('URL is not exist or invalid format: \n', e.message, '\n');
-        }
+        const deployer = new heater_1.Heater(url);
+        return deployer.process()
+            .then((r) => {
+            process.exit(0);
+            return r;
+        })
+            .catch((r) => {
+            process.exit(1);
+            return r;
+        });
     }
     return false;
 });
@@ -74,19 +75,15 @@ class Heater {
         this.generator.on('error', this.errorHandler.bind(this));
         this.crawler.on("fetchcomplete", function (queueItem, responseBuffer, response) {
             var _a, _b, _c, _d;
-            console.log("\nStatus: %d\t\tLatency %ds\t\tDownload %ds\t\tRequest %ds\t\t", (_a = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _a === void 0 ? void 0 : _a.code, ((_b = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _b === void 0 ? void 0 : _b.requestLatency) / 1000, ((_c = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _c === void 0 ? void 0 : _c.downloadTime) / 1000, ((_d = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _d === void 0 ? void 0 : _d.requestTime) / 1000);
-            console.log("Page %s\n", queueItem.url);
+            console.log("\nStatus: %d\tLatency %ds\tDownload %ds\tRequest %ds", (_a = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _a === void 0 ? void 0 : _a.code, ((_b = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _b === void 0 ? void 0 : _b.requestLatency) / 1000, ((_c = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _c === void 0 ? void 0 : _c.downloadTime) / 1000, ((_d = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _d === void 0 ? void 0 : _d.requestTime) / 1000);
+            console.log("Page %s", queueItem.url);
         });
     }
     process() {
         return new Promise((resolve, reject) => {
             this.generator.on('done', () => {
-                console.log(this.errorsCounter);
                 if (this.errorsCounter > 0) {
-                    process.exit(1);
-                }
-                else {
-                    process.exit(0);
+                    reject(false);
                 }
                 resolve(true);
             });

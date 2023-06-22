@@ -32,9 +32,7 @@ export class Heater {
     return new Promise((resolve, reject) => {
       this.generator.on('done', () => {
         if (this.errorsCounter > 0) {
-          process.exit(1);
-        } else {
-          process.exit(0);
+          reject(false);
         }
         resolve(true);
       })
