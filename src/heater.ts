@@ -41,8 +41,6 @@ export class Heater {
   }
 
   public async errorHandler(error) {
-    // this.crawler
-    this.crawler.queueURL(error.url, undefined, false)
     this.errorsCounter++;
     console.log(error);
   }
