@@ -2,9 +2,8 @@ const Generator = require('sitemap-generator');
 
 export class Heater {
 
-  private crawler;
-  private sitemap;
-  private generator;
+  private crawler: any;
+  private generator: any;
 
   constructor (url: string) {
     this.generator = Generator(url, {
@@ -18,13 +17,9 @@ export class Heater {
       userAgent: 'site-heater',
 
     });
-
     this.crawler = this.generator.getCrawler();
-    this.sitemap = this.generator.getSitemap();
 
-    this.crawler.on('crawlstart', this.processor.bind(this))
     this.generator.on('error', this.errorHandler.bind(this))
-    this.generator.on('add', this.addHandler.bind(this))
 
     this.crawler.on("fetchcomplete", function(queueItem, responseBuffer, response) {
       console.log("\nStatus: %d\t\tLatency %ds\t\tDownload %ds\t\tRequest %ds\t\t", queueItem?.stateData?.code, queueItem?.stateData?.requestLatency / 1000, queueItem?.stateData?.downloadTime / 1000, queueItem?.stateData?.requestTime / 1000);
@@ -37,22 +32,11 @@ export class Heater {
       this.generator.on('done', () => {
         resolve(true);
       })
-      this.generator.queueURL('https://wavesenterprise.com');
       this.generator.start();
     })
-  }
-
-  public async processor(options, done) {
-    console.log('options', options, done);
-    // this.sitemap.addURL('/my/static/url')
-  }
-
-  public async addHandler(url) {
-    // console.log('Add', url);
   }
 
   public async errorHandler(error) {
     console.log('error', error);
   }
-
 }

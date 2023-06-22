@@ -24,10 +24,7 @@ class Heater {
             userAgent: 'site-heater',
         });
         this.crawler = this.generator.getCrawler();
-        this.sitemap = this.generator.getSitemap();
-        this.crawler.on('crawlstart', this.processor.bind(this));
         this.generator.on('error', this.errorHandler.bind(this));
-        this.generator.on('add', this.addHandler.bind(this));
         this.crawler.on("fetchcomplete", function (queueItem, responseBuffer, response) {
             var _a, _b, _c, _d;
             console.log("\nStatus: %d\t\tLatency %ds\t\tDownload %ds\t\tRequest %ds\t\t", (_a = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _a === void 0 ? void 0 : _a.code, ((_b = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _b === void 0 ? void 0 : _b.requestLatency) / 1000, ((_c = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _c === void 0 ? void 0 : _c.downloadTime) / 1000, ((_d = queueItem === null || queueItem === void 0 ? void 0 : queueItem.stateData) === null || _d === void 0 ? void 0 : _d.requestTime) / 1000);
@@ -39,19 +36,7 @@ class Heater {
             this.generator.on('done', () => {
                 resolve(true);
             });
-            this.generator.queueURL('https://wavesenterprise.com');
             this.generator.start();
-        });
-    }
-    processor(options, done) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log('options', options, done);
-            // this.sitemap.addURL('/my/static/url')
-        });
-    }
-    addHandler(url) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // console.log('Add', url);
         });
     }
     errorHandler(error) {
