@@ -14,7 +14,7 @@ export class Heater {
       priorityMap: [1.0, 0.8, 0.6, 0.4, 0.2, 0],
       changeFreq: "daily",
       maxDepth: 10,
-      timeout: 999999,
+      timeout: 99999999,
       queueItem: 1,
       userAgent: 'site-heater',
     });
@@ -41,6 +41,8 @@ export class Heater {
   }
 
   public async errorHandler(error) {
+    // this.crawler
+    this.crawler.queueURL(error.url, undefined, false)
     this.errorsCounter++;
     console.log(error);
   }

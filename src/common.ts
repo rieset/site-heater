@@ -7,7 +7,7 @@ export const heating = async (url: string): Promise<any> => {
   } else {
     const deployer = new Heater(url);
 
-    return deployer.process()
+    return await deployer.process()
       .then((r) => {
         process.exit(0)
         return r;

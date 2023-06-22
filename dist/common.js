@@ -17,7 +17,7 @@ const heating = (url) => __awaiter(void 0, void 0, void 0, function* () {
     }
     else {
         const deployer = new heater_1.Heater(url);
-        return deployer.process()
+        return yield deployer.process()
             .then((r) => {
             process.exit(0);
             return r;
