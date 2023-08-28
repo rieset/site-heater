@@ -17,8 +17,7 @@ export class Heater {
       timeout: 99999999,
       queueItem: 1,
       userAgent: 'site-heater',
-      maxConcurrency: 2,
-      interval: 2000
+      interval: 3000
     });
     this.crawler = this.generator.getCrawler();
 
