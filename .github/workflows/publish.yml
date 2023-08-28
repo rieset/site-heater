@@ -27,7 +27,19 @@ jobs:
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
+
+      - name: Update version
+        run: |
+          git config user.email "albert@iblyaminov.io"
+          git config user.name "Albert Iblyaminov"
+          npm version ${GITHUB_REF#refs/tags/v.} --no-verify
+
+      - name: Install dependencies
       - run: npm ci
+
+      - name: Build package
+        run: npm run build
+
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
