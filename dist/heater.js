@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Heater = void 0;
 const Generator = require('sitemap-generator');
 class Heater {
-    constructor(url) {
+    constructor(url, user = null, password = null) {
         this.errorsCounter = 0;
         this.generator = Generator(url, {
             filepath: "./sitemap.xml",
@@ -22,10 +22,16 @@ class Heater {
             maxDepth: 10,
             timeout: 99999999,
             queueItem: 1,
-            userAgent: 'site-heater',
-            interval: 2000
+            userAgent: !!user && !!password ? 'dev-site-heater' : 'site-heater',
+            interval: 3000,
         });
         this.crawler = this.generator.getCrawler();
+        this.crawler.needsAuth = !!user && !!password;
+        this.crawler.authUser = user;
+        this.crawler.authPass = password;
+        this.crawler.timeout = 30000;
+        this.crawler.interval = 3000;
+        this.crawler.ignoreInvalidSSL = true;
         this.generator.on('error', this.errorHandler.bind(this));
         this.crawler.on("fetchcomplete", function (queueItem, responseBuffer, response) {
             var _a, _b, _c, _d;

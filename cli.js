@@ -12,15 +12,15 @@ Usage: $0 url
 const argv = yargs.argv;
 
 if (argv._.length) {
-  process(argv._[0]);
+  process(argv._[0], argv?.u, argv?.p);
 } else {
   throw new Error('URL is not define')
 }
 
-function process(value) {
+function process(value, user, password) {
   const module = require('./dist/common.js');
 
-  module.heating(value).then((data) => {
+  module.heating(value, user, password).then((data) => {
     console.log(data)
   })
 }

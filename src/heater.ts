@@ -7,7 +7,7 @@ export class Heater {
 
   private errorsCounter = 0;
 
-  constructor (url: string) {
+  constructor (url: string, user: string | null = null, password: string | null = null) {
     this.generator = Generator(url, {
       filepath: "./sitemap.xml",
       stripQuerystring: true,
@@ -17,9 +17,15 @@ export class Heater {
       timeout: 99999999,
       queueItem: 1,
       userAgent: 'site-heater',
-      interval: 3000
+      interval: 3000,
     });
     this.crawler = this.generator.getCrawler();
+    this.crawler.needsAuth = !!user && !!password;
+    this.crawler.authUser = user;
+    this.crawler.authPass = password;
+    this.crawler.timeout = 30000;
+    this.crawler.interval = 3000;
+    this.crawler.ignoreInvalidSSL = true;
 
     this.generator.on('error', this.errorHandler.bind(this))
 

@@ -11,12 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.heating = void 0;
 const heater_1 = require("./heater");
-const heating = (url) => __awaiter(void 0, void 0, void 0, function* () {
+const heating = (url, user = null, password = null) => __awaiter(void 0, void 0, void 0, function* () {
     if (!url) {
         console.error('URL is not specified');
     }
     else {
-        const deployer = new heater_1.Heater(url);
+        const deployer = new heater_1.Heater(url, user, password);
         return yield deployer.process()
             .then((r) => {
             process.exit(0);

@@ -18,12 +18,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.heating = void 0;
 const heater_1 = __nccwpck_require__(3084);
-const heating = (url) => __awaiter(void 0, void 0, void 0, function* () {
+const heating = (url, user = null, password = null) => __awaiter(void 0, void 0, void 0, function* () {
     if (!url) {
         console.error('URL is not specified');
     }
     else {
-        const deployer = new heater_1.Heater(url);
+        const deployer = new heater_1.Heater(url, user, password);
         return yield deployer.process()
             .then((r) => {
             process.exit(0);
@@ -59,7 +59,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Heater = void 0;
 const Generator = __nccwpck_require__(1520);
 class Heater {
-    constructor(url) {
+    constructor(url, user = null, password = null) {
         this.errorsCounter = 0;
         this.generator = Generator(url, {
             filepath: "./sitemap.xml",
@@ -69,10 +69,16 @@ class Heater {
             maxDepth: 10,
             timeout: 99999999,
             queueItem: 1,
-            userAgent: 'site-heater',
-            interval: 2000
+            userAgent: !!user && !!password ? 'dev-site-heater' : 'site-heater',
+            interval: 3000,
         });
         this.crawler = this.generator.getCrawler();
+        this.crawler.needsAuth = !!user && !!password;
+        this.crawler.authUser = user;
+        this.crawler.authPass = password;
+        this.crawler.timeout = 30000;
+        this.crawler.interval = 3000;
+        this.crawler.ignoreInvalidSSL = true;
         this.generator.on('error', this.errorHandler.bind(this));
         this.crawler.on("fetchcomplete", function (queueItem, responseBuffer, response) {
             var _a, _b, _c, _d;

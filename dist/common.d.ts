@@ -1,1 +1,1 @@
-export declare const heating: (url: string) => Promise<any>;
+export declare const heating: (url: string, user?: string | null, password?: string | null) => Promise<any>;
